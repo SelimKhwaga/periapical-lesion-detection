@@ -1,0 +1,458 @@
+"""
+Binary Classification Test - Healthy vs Diseased Detection
+==========================================================
+Tests model's ability to distinguish healthy from diseased radiographs
+Evaluates on DENTEX Challenge 2023 dataset
+Author: [Your Name]
+KAUST Bioengineering MS Application 2026
+"""
+
+import json
+import random
+from pathlib import Path
+from typing import Dict, List, Tuple
+
+import cv2
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+from ultralytics import YOLO
+
+
+class BinaryClassificationTester:
+    """
+    Binary classification testing for periapical lesion detection.
+    
+    Tests model performance on healthy vs diseased radiographs,
+    independent of exact lesion localization.
+    """
+    
+    def __init__(self, model_path: str, dataset_path: str):
+        """
+        Initialize tester.
+        
+        Args:
+            model_path: Path to trained YOLO model weights
+            dataset_path: Path to DENTEX dataset root
+        """
+        self.model = YOLO(model_path)
+        self.dataset_path = Path(dataset_path)
+        self.results = {}
+        
+        print("="*80)
+        print("BINARY CLASSIFICATION TEST - HEALTHY VS DISEASED")
+        print("="*80)
+        print(f"✓ Model loaded: {model_path}")
+        print(f"✓ Dataset path: {dataset_path}")
+    
+    def load_dataset(self, num_samples: int = None) -> Tuple[List[int], List[int]]:
+        """
+        Load and separate healthy vs diseased images from DENTEX dataset.
+        
+        Args:
+            num_samples: Number of samples per class (None = use all)
+        
+        Returns:
+            healthy_ids: List of healthy image IDs
+            diseased_ids: List of diseased image IDs
+        """
+        print("\n[1/5] Loading DENTEX dataset...")
+        
+        # Load annotations
+        disease_json = (
+            self.dataset_path / 
+            'training_data/training_data/quadrant-enumeration-disease/'
+            'train_quadrant_enumeration_disease.json'
+        )
+        
+        with open(disease_json, 'r') as f:
+            dentex_data = json.load(f)
+        
+        print(f"✓ Loaded {len(dentex_data['images'])} images")
+        print(f"✓ Loaded {len(dentex_data['annotations'])} annotations")
+        
+        # Create image lookup
+        image_lookup = {img['id']: img for img in dentex_data['images']}
+        
+        # Find periapical lesion class (category_id_3 == 2)
+        periapical_class_id = 2
+        diseased_image_ids = set()
+        
+        for ann in dentex_data['annotations']:
+            if ann.get('category_id_3') == periapical_class_id:
+                diseased_image_ids.add(ann['image_id'])
+        
+        # Separate healthy images
+        all_image_ids = set(image_lookup.keys())
+        healthy_image_ids = all_image_ids - diseased_image_ids
+        
+        print(f"\n📊 Dataset split:")
+        print(f"  Healthy images:   {len(healthy_image_ids)}")
+        print(f"  Diseased images:  {len(diseased_image_ids)}")
+        
+        # Sample if requested
+        if num_samples:
+            healthy_sample = random.sample(
+                list(healthy_image_ids), 
+                min(num_samples, len(healthy_image_ids))
+            )
+            diseased_sample = random.sample(
+                list(diseased_image_ids),
+                min(num_samples, len(diseased_image_ids))
+            )
+        else:
+            healthy_sample = list(healthy_image_ids)
+            diseased_sample = list(diseased_image_ids)
+        
+        print(f"\n✓ Selected {len(healthy_sample)} healthy images")
+        print(f"✓ Selected {len(diseased_sample)} diseased images")
+        
+        self.image_lookup = image_lookup
+        self.images_dir = (
+            self.dataset_path / 
+            'training_data/training_data/quadrant-enumeration-disease/xrays'
+        )
+        
+        return healthy_sample, diseased_sample
+    
+    def test_threshold(
+        self, 
+        healthy_ids: List[int], 
+        diseased_ids: List[int],
+        confidence_threshold: float = 0.4
+    ) -> Dict:
+        """
+        Test model at specific confidence threshold.
+        
+        Args:
+            healthy_ids: List of healthy image IDs
+            diseased_ids: List of diseased image IDs
+            confidence_threshold: Detection confidence threshold
+        
+        Returns:
+            results: Dictionary with metrics and examples
+        """
+        results = {
+            'healthy': {'correct': 0, 'incorrect': 0, 'examples': []},
+            'diseased': {'correct': 0, 'incorrect': 0, 'examples': []}
+        }
+        
+        # Test healthy images (should detect nothing)
+        print(f"\n{'─'*80}")
+        print("HEALTHY IMAGES (should detect NOTHING)")
+        print(f"{'─'*80}")
+        
+        for idx, img_id in enumerate(healthy_ids):
+            img_info = self.image_lookup[img_id]
+            img_path = self.images_dir / img_info['file_name']
+            
+            if not img_path.exists():
+                continue
+            
+            # Run detection
+            detections = self.model(
+                str(img_path), 
+                conf=confidence_threshold, 
+                verbose=False
+            )
+            num_detections = len(detections[0].boxes)
+            
+            # Healthy = should detect nothing
+            if num_detections == 0:
+                results['healthy']['correct'] += 1
+            else:
+                results['healthy']['incorrect'] += 1
+                if len(results['healthy']['examples']) < 3:
+                    results['healthy']['examples'].append((img_path, num_detections))
+            
+            if (idx + 1) % 20 == 0:
+                print(f"  Processed {idx+1}/{len(healthy_ids)} healthy images...", end='\r')
+        
+        print(f"  ✓ Processed {len(healthy_ids)} healthy images" + " "*30)
+        
+        # Test diseased images (should detect something)
+        print(f"\n{'─'*80}")
+        print("DISEASED IMAGES (should detect SOMETHING)")
+        print(f"{'─'*80}")
+        
+        for idx, img_id in enumerate(diseased_ids):
+            img_info = self.image_lookup[img_id]
+            img_path = self.images_dir / img_info['file_name']
+            
+            if not img_path.exists():
+                continue
+            
+            # Run detection
+            detections = self.model(
+                str(img_path),
+                conf=confidence_threshold,
+                verbose=False
+            )
+            num_detections = len(detections[0].boxes)
+            
+            # Diseased = should detect something
+            if num_detections > 0:
+                results['diseased']['correct'] += 1
+            else:
+                results['diseased']['incorrect'] += 1
+                if len(results['diseased']['examples']) < 3:
+                    results['diseased']['examples'].append((img_path, 0))
+            
+            if (idx + 1) % 20 == 0:
+                print(f"  Processed {idx+1}/{len(diseased_ids)} diseased images...", end='\r')
+        
+        print(f"  ✓ Processed {len(diseased_ids)} diseased images" + " "*30)
+        
+        return results
+    
+    def calculate_metrics(self, results: Dict) -> Dict:
+        """Calculate performance metrics."""
+        tn = results['healthy']['correct']
+        fp = results['healthy']['incorrect']
+        tp = results['diseased']['correct']
+        fn = results['diseased']['incorrect']
+        
+        total = tp + tn + fp + fn
+        
+        return {
+            'accuracy': (tp + tn) / total if total > 0 else 0,
+            'sensitivity': tp / (tp + fn) if (tp + fn) > 0 else 0,
+            'specificity': tn / (tn + fp) if (tn + fp) > 0 else 0,
+            'tn': tn, 'fp': fp, 'tp': tp, 'fn': fn
+        }
+    
+    def run_multi_threshold_test(
+        self,
+        healthy_ids: List[int],
+        diseased_ids: List[int],
+        thresholds: List[float] = [0.3, 0.4, 0.5]
+    ) -> Dict:
+        """
+        Test multiple confidence thresholds.
+        
+        Args:
+            healthy_ids: Healthy image IDs
+            diseased_ids: Diseased image IDs
+            thresholds: List of confidence thresholds to test
+        
+        Returns:
+            all_results: Results for each threshold
+        """
+        print("\n[2/5] Running multi-threshold test...")
+        
+        all_results = {}
+        
+        for thresh in thresholds:
+            print(f"\n{'='*80}")
+            print(f"TESTING CONFIDENCE THRESHOLD: {thresh}")
+            print(f"{'='*80}")
+            
+            results = self.test_threshold(healthy_ids, diseased_ids, thresh)
+            metrics = self.calculate_metrics(results)
+            
+            all_results[thresh] = {
+                **metrics,
+                'results': results
+            }
+            
+            # Display results
+            print(f"\n{'─'*80}")
+            print(f"RESULTS FOR THRESHOLD {thresh}")
+            print(f"{'─'*80}")
+            print(f"  Accuracy:     {metrics['accuracy']:.3f} ({metrics['accuracy']*100:.1f}%)")
+            print(f"  Sensitivity:  {metrics['sensitivity']:.3f} ({metrics['sensitivity']*100:.1f}%)")
+            print(f"  Specificity:  {metrics['specificity']:.3f} ({metrics['specificity']*100:.1f}%)")
+            print(f"  TN: {metrics['tn']}  FP: {metrics['fp']}  TP: {metrics['tp']}  FN: {metrics['fn']}")
+        
+        return all_results
+    
+    def display_summary(self, all_results: Dict):
+        """Display comparison summary across all thresholds."""
+        print("\n[3/5] Comparing all thresholds...")
+        print("\n" + "="*80)
+        print("COMPARISON ACROSS THRESHOLDS")
+        print("="*80)
+        
+        # Find best threshold
+        best_threshold = max(
+            all_results.keys(), 
+            key=lambda t: all_results[t]['accuracy']
+        )
+        best_results = all_results[best_threshold]
+        
+        # Print comparison table
+        print(f"\n{'Threshold':<12} {'Accuracy':<12} {'Sensitivity':<14} {'Specificity':<14}")
+        print("─"*80)
+        
+        for thresh in sorted(all_results.keys()):
+            r = all_results[thresh]
+            marker = " ⭐ BEST" if thresh == best_threshold else ""
+            print(
+                f"{thresh:<12.2f} {r['accuracy']:<12.3f} "
+                f"{r['sensitivity']:<14.3f} {r['specificity']:<14.3f}{marker}"
+            )
+        
+        # Print detailed best results
+        print("\n" + "="*80)
+        print(f"BEST THRESHOLD: {best_threshold}")
+        print("="*80)
+        
+        print(f"\n📊 Confusion Matrix:")
+        print(f"                    Predicted Healthy    Predicted Diseased")
+        print(f"  Actually Healthy        {best_results['tn']:3d} (TN)            {best_results['fp']:3d} (FP)")
+        print(f"  Actually Diseased       {best_results['fn']:3d} (FN)            {best_results['tp']:3d} (TP)")
+        
+        print(f"\n📈 Performance Metrics:")
+        print(f"  Accuracy:                {best_results['accuracy']:.3f} ({best_results['accuracy']*100:.1f}%)")
+        print(f"  Sensitivity (Recall):    {best_results['sensitivity']:.3f} ({best_results['sensitivity']*100:.1f}%)")
+        print(f"  Specificity:             {best_results['specificity']:.3f} ({best_results['specificity']*100:.1f}%)")
+        
+        return best_threshold, best_results
+    
+    def save_visualizations(
+        self, 
+        best_results: Dict, 
+        best_threshold: float,
+        output_dir: str = 'binary_test_results'
+    ):
+        """Save error case visualizations."""
+        print("\n[4/5] Creating error visualizations...")
+        
+        output_path = Path(output_dir)
+        output_path.mkdir(exist_ok=True)
+        
+        results = best_results['results']
+        
+        # Visualize false positives
+        print("\n📸 False Positives (healthy but detected):")
+        for i, (img_path, num_det) in enumerate(results['healthy']['examples'][:3]):
+            fig = self._visualize_error(
+                img_path, 
+                num_det, 
+                f"FALSE POSITIVE: {num_det} detection(s) in healthy image",
+                best_threshold
+            )
+            save_path = output_path / f'false_positive_{i+1}.png'
+            plt.savefig(save_path, dpi=150, bbox_inches='tight')
+            plt.close()
+            print(f"  ✓ Saved: {save_path}")
+        
+        # Visualize false negatives
+        print("\n📸 False Negatives (diseased but missed):")
+        for i, (img_path, _) in enumerate(results['diseased']['examples'][:3]):
+            fig = self._visualize_error(
+                img_path,
+                0,
+                "FALSE NEGATIVE: Missed periapical lesion",
+                best_threshold
+            )
+            save_path = output_path / f'false_negative_{i+1}.png'
+            plt.savefig(save_path, dpi=150, bbox_inches='tight')
+            plt.close()
+            print(f"  ✓ Saved: {save_path}")
+        
+        print(f"\n✓ Visualizations saved to: {output_path}")
+    
+    def _visualize_error(
+        self, 
+        img_path: Path, 
+        num_detections: int, 
+        title: str,
+        confidence_threshold: float
+    ):
+        """Create visualization of error case."""
+        img = cv2.imread(str(img_path))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        
+        # Get predictions
+        results_viz = self.model(
+            str(img_path),
+            conf=confidence_threshold,
+            verbose=False
+        )
+        
+        fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+        ax.imshow(img)
+        
+        # Draw detection boxes
+        for box in results_viz[0].boxes:
+            coords = box.xyxy[0].cpu().numpy()
+            conf = float(box.conf[0].cpu().numpy())
+            cls = int(box.cls[0].cpu().numpy())
+            
+            x1, y1, x2, y2 = coords
+            color = 'red' if cls == 1 else 'orange'  # Type4=red, Type3=orange
+            
+            rect = Rectangle(
+                (x1, y1), x2-x1, y2-y1, 
+                linewidth=3, edgecolor=color, facecolor='none'
+            )
+            ax.add_patch(rect)
+            
+            label = f"Type{cls+3} {conf:.2f}"
+            ax.text(
+                x1, y1-10, label, color=color, fontsize=12,
+                fontweight='bold', 
+                bbox=dict(boxstyle='round', facecolor='black', alpha=0.7)
+            )
+        
+        ax.axis('off')
+        ax.set_title(title, fontsize=16, fontweight='bold', pad=15)
+        plt.tight_layout()
+        
+        return fig
+
+
+def main():
+    """Main execution function."""
+    
+    # Configuration
+    MODEL_PATH = "path/to/your/best.pt"  # UPDATE THIS
+    DATASET_PATH = "path/to/dentex/dataset"  # UPDATE THIS
+    NUM_SAMPLES = None  # Use all samples (or specify a number)
+    THRESHOLDS = [0.3, 0.4, 0.5]
+    
+    # Initialize tester
+    tester = BinaryClassificationTester(MODEL_PATH, DATASET_PATH)
+    
+    # Load dataset
+    healthy_ids, diseased_ids = tester.load_dataset(num_samples=NUM_SAMPLES)
+    
+    # Run tests
+    all_results = tester.run_multi_threshold_test(
+        healthy_ids, 
+        diseased_ids, 
+        THRESHOLDS
+    )
+    
+    # Display summary
+    best_threshold, best_results = tester.display_summary(all_results)
+    
+    # Save visualizations
+    tester.save_visualizations(best_results, best_threshold)
+    
+    # Final summary
+    print("\n" + "="*80)
+    print("✅ BINARY CLASSIFICATION TEST COMPLETE")
+    print("="*80)
+    
+    print("\n💡 Interpretation:")
+    if best_results['accuracy'] > 0.85:
+        print("  ✅ EXCELLENT! Model distinguishes healthy vs diseased very well.")
+    elif best_results['accuracy'] > 0.75:
+        print("  ✅ GOOD! Model performs well at detecting presence of lesions.")
+    elif best_results['accuracy'] > 0.65:
+        print("  ⚠️  MODERATE. Model has some ability to detect lesions.")
+    else:
+        print("  ⚠️  POOR. Model struggles with this dataset.")
+    
+    print(f"\n🔍 Key Insights:")
+    print(f"  • Sensitivity {best_results['sensitivity']*100:.1f}% "
+          f"means model finds {best_results['sensitivity']*100:.1f}% of diseased cases")
+    print(f"  • Specificity {best_results['specificity']*100:.1f}% "
+          f"means model correctly ignores {best_results['specificity']*100:.1f}% of healthy cases")
+    
+    print("\n" + "="*80)
+
+
+if __name__ == "__main__":
+    main()
