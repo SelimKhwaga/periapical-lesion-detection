@@ -1,0 +1,11 @@
+# Training Scripts
+     
+     YOLOv8-based training pipeline for periapical lesion detection.
+     
+     ## Files
+     - `train_model.py` - Main training script (Lightning AI optimized)
+     - `data.yaml` - Dataset configuration
+     
+     ## Results
+     - mAP@0.5: 80.7%
+     - Training time: ~8 hours on T4 GPU
