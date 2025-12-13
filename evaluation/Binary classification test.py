@@ -3,8 +3,8 @@ Binary Classification Test - Healthy vs Diseased Detection
 ==========================================================
 Tests model's ability to distinguish healthy from diseased radiographs
 Evaluates on DENTEX Challenge 2023 dataset
-Author: [Your Name]
-KAUST Bioengineering MS Application 2026
+Author: [Selim Rezk Abdelmawly Khwaga]
+
 """
 
 import json
@@ -455,4 +455,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
