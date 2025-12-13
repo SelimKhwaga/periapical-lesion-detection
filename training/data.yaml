@@ -1,0 +1,24 @@
+# Periapical Lesion Detection Dataset Configuration
+# YOLOv8 format for Type3 and Type4 periapical lesion detection
+
+# Dataset root path (Lightning AI working dataset)
+path: /teamspace/studios/this_studio/working_dataset
+
+# Training and validation splits
+train: images/train  # 13,058 training images
+val: images/val      # 3,534 validation images
+
+# Class definitions
+names:
+  0: Type3  # Less severe periapical lesion
+  1: Type4  # More severe periapical lesion
+
+# Number of classes
+nc: 2
+
+# Dataset Statistics:
+# - Training images: 13,058
+# - Validation images: 3,534
+# - Type3 instances: ~14,253 (63.7%)
+# - Type4 instances: ~8,111 (36.1%)
+# - Total annotations: 22,364
