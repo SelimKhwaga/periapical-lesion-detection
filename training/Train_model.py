@@ -4,7 +4,6 @@ Periapical Lesion Detection - Training Script
 YOLOv8-based detection system for Type3 and Type4 periapical lesions
 Author: [Selim Rezk Abdelmawly Khwaga]
 Date: 2024-2025
-KAUST Bioengineering MS Application 2026
 """
 
 from ultralytics import YOLO
@@ -195,4 +194,5 @@ if __name__ == "__main__":
     #     data_yaml=DATA_YAML
     # )
     
+
     logger.info("\n✅ Training pipeline complete!")
