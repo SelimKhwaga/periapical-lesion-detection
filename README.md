@@ -7,7 +7,6 @@
 
 **Author:** Selim Rezk Abdelmawly Khwaga, DDS  
 **Institution:** British University in Egypt (BUE) | King Salman International University (KSIU)  
-**Application:** Bioengineering MS Program 2026  
 **Project Duration:** 2024-2025  
 **Contact:**  
 📧 sleemrezk@yahoo.com | sleemkhw@gmail.com  
@@ -254,8 +253,8 @@ This work directly contributes to Saudi Arabia's healthcare transformation goals
 
 This project was developed as part of advanced research in medical imaging and artificial intelligence, exploring the intersection of clinical dentistry and deep learning for improved diagnostic workflows.
 
-**Target Program:** Bioengineering MS Program (Fall 2026)  
-**Research Track:** Bioinformatics and Machine Learning in Healthcare  
+**Target Program:** Graduate studies in Computational Biology / Bioengineering (2025-2026)
+**Research Interests:** Medical Imaging AI, Domain Adaptation, Cross-Population Generalization, Healthcare Machine Learning
 **Academic Status:**
 - BSc: British University in Egypt (BUE) - GPA: 4.0/4.0
 - MSc: Currently enrolled (in progress)
@@ -269,21 +268,21 @@ This work builds upon and compares to:
 - **YOLOv8 Architecture** (Ultralytics, 2023) - State-of-the-art object detection
 - **Medical Image Analysis Research** - Published studies reporting 83-95% mAP for similar tasks
 
-### Comparison with State-of-the-Art
-
-| Study | Method | Dataset Size | mAP@0.5 | Year |
-|-------|--------|--------------|---------|------|
-| Smith et al. | CNN + SVM | 500 images | 65% | 2022 |
-| Zhang et al. | Faster R-CNN | 2,000 images | 72% | 2023 |
-| **This Work** | **YOLOv8s** | **13,058 images** | **80.7%** | **2024** |
-| Lee et al. | Ensemble CNN | 6,000 images | 89% | 2023 |
-| SOTA Benchmark | YOLOv8x + Ensemble | 20,000+ images | 95% | 2024 |
+### Performance Context
+Based on a review of recent literature, dental lesion detection systems typically achieve the following performance ranges:
+- **Traditional CNN-based methods: 60–75% mAP:** - 60–75% mAP
+- **Modern object detection models (YOLO / Faster R-CNN):** - 85–95% mAP
+- **Ensemble-based methods with large datasets:** - Strong detection rate across lesion types
+  
+**Key Differentiators:**
+- **Model:** - YOLOv8s (single model)
+- **Performance:** - 80.7% mAP@0.5
 
 **Key Differentiators:**
-- Largest single-model training dataset in comparable studies
-- Real-world clinical data with diverse patient demographics
-- External validation on international benchmark (DENTEX)
-- Open-source implementation for reproducibility
+- Large-scale training dataset (13,058 annotated clinical images)
+- External validation on an international benchmark dataset (DENTEX 2023)
+- Clinical data quality control performed by a licensed dentist
+- Open-source implementation to ensure reproducibility and transparency
 
 ---
 
@@ -452,8 +451,8 @@ MSc Student (Current) | BSc Graduate, British University in Egypt (BUE) - GPA: 4
 - 🐱 GitHub: [@SelimKhwaga](https://github.com/SelimKhwaga)
 - 🎓 Institution: British University in Egypt (BUE) | King Salman International University (KSIU)
 
-**Application:** Bioengineering MS Program, Fall 2026  
-**Research Interests:** Medical Imaging, Deep Learning, Computer Vision, Digital Health, AI in Dentistry
+ 
+**Research Interests:** Medical Imaging AI, Computational Biology, Domain Adaptation, Healthcare Machine Learning, Bioengineering 
 
 ---
 
@@ -493,7 +492,7 @@ MSc Student (Current) | BSc Graduate, British University in Egypt (BUE) - GPA: 4
 
 **⭐ If you find this work useful, please consider starring the repository! ⭐**
 
-**🎓 Developed for Bioengineering MS Application 2026 🎓**
+**🎓  Graduate Research Portfolio – Medical AI & Computational Health 🎓**
 
 **Demonstrating Excellence in AI-Powered Medical Imaging Research**
 
