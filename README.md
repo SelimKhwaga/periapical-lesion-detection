@@ -9,7 +9,9 @@
 **Institution:** British University in Egypt (BUE) | King Salman International University (KSIU)  
 **Application:** Bioengineering MS Program 2026  
 **Project Duration:** 2024-2025  
-**Contact:** sleemrezk@yahoo.com | [LinkedIn](https://www.linkedin.com/in/selim-khwaga-b79921196/)
+**Contact:**  
+📧 sleemrezk@yahoo.com | sleemkhw@gmail.com  
+🔗 [LinkedIn](https://www.linkedin.com/in/selim-khwaga-b79921196/)
 
 ---
 
