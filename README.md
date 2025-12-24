@@ -503,4 +503,4 @@ MSc Student (Current) | BSc Graduate, British University in Egypt (BUE) - GPA: 4
 
 *Last Updated: December 2025*  
 *Version: 1.0.0*  
-*Contact: sleemrezk@yahoo.com*
+*Contact: sleemrezk@yahoo.com | sleemkhw@gmail.com*
