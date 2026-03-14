@@ -21,11 +21,10 @@ Deep learning system for automated detection and classification of periapical le
 
 ### Key Achievements
 
-- **80.7% mAP@0.5** - Approaching state-of-the-art performance (83-95% in literature)
-- **82.3% Precision** - High diagnostic reliability for clinical deployment
-- **73.1% Recall** - Strong detection rate across lesion types
-- **112% improvement** over baseline detection methods
-- **Large-scale validation** - 13,058 training images, 3,534 validation images
+- **80.7% mAP@0.5**  
+- **82.3% Precision** 
+- **73.1% Recall** 
+- **Large-scale validation** - 3,534 validation images
 
 ---
 
@@ -97,8 +96,8 @@ Testing on external DENTEX dataset with 116 diseased and 116 healthy images:
 
 **Data Corrections:**
 - Fixed 4,056 corrupted annotations (25% of original dataset)
-- Validated annotation quality through manual review
-- Applied strict quality control for clinical accuracy
+- Developed automated label correction pipeline, with partial manual verification of annotation quality
+- Applied quality control measures including class mapping standardization and coordinate validation
 
 ### Training Strategy
 
@@ -226,7 +225,7 @@ periapical-lesion-detection/
 
 1. **Automated Screening:** Potential for first-line diagnostic support in general dental practice
 2. **Resource Efficiency:** Reduces radiograph review time while maintaining accuracy
-3. **Consistency:** Eliminates inter-observer variability in lesion detection
+3. **Consistency:** Reduces inter-observer variability in lesion detection
 4. **Early Detection:** High sensitivity (73%) for identifying early-stage lesions
 
 ### Alignment with Saudi Vision 2030
@@ -349,7 +348,7 @@ dfl: 1.5
 - Total: 3,534 images
 - Proportional class distribution maintained
 - Used for hyperparameter tuning and model selection
-- Never seen during training
+- Pre-split validation set used for model selection
 
 **External Test Set (DENTEX):**
 - Total: 232 images
@@ -358,12 +357,9 @@ dfl: 1.5
 
 ### Data Quality Control
 
-1. **Annotation Correction:** Fixed 4,056 corrupted labels (25% error rate in original data)
-2. **Clinical Validation:** All annotations reviewed by licensed dentist (DDS)
-3. **Quality Metrics:** 
-   - Inter-annotator agreement: >90%
-   - Bounding box precision: ±5 pixels average
-4. **Exclusion Criteria:** Poor image quality, insufficient resolution, ambiguous findings
+1. **Annotation Correction:** Automated pipeline standardized 4,056 label inconsistencies (25% of dataset), including class remapping and coordinate validation
+2. **Clinical Validation:** Partial manual review of annotations by licensed dentist (DDS)
+
 
 ---
 
