@@ -97,7 +97,7 @@ The model demonstrates balanced performance across lesion severities, with sligh
 **External Validation:**
 - **Dataset:** DENTEX Challenge 2023 (MICCAI)
 - **Purpose:** Binary classification testing (healthy vs diseased)
-- **Size:** 232 images (116 healthy, 116 with periapical lesions)
+- **Size:** 705 images (589 no-lesion, 116 lesion)
 
 **Data Corrections:**
 - Automated label-cleaning pipeline (out-of-range class-ID clamping + coordinate clipping) applied to ~25% of annotations.
@@ -427,13 +427,13 @@ I welcome contributions, suggestions, and collaborations! Areas of interest:
 Teaching Assistant, King Salman International University (KSIU)  
 MSc Student (Current) | BSc Graduate, British University in Egypt (BUE) - GPA: 4.0/4.0
 
-- 📧 Email: sleemrezk@yahoo.com
+- 📧 Email: sleemkhw@gmail.com
 - 💼 LinkedIn: [linkedin.com/in/selim-khwaga-b79921196](https://www.linkedin.com/in/selim-khwaga-b79921196/)
 - 🐱 GitHub: [@SelimKhwaga](https://github.com/SelimKhwaga)
 - 🎓 Institution: British University in Egypt (BUE) | King Salman International University (KSIU)
 
  
-**Research Interests:** Medical Imaging AI, Computational Biology, Domain Adaptation, Healthcare Machine Learning, Bioengineering 
+**Research Interests:** Medical Imaging AI, Domain Adaptation, Healthcare Machine Learning, Bioengineering 
 
 ---
 
