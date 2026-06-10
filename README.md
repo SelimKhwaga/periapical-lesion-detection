@@ -10,7 +10,7 @@
 **Project Duration:** Oct–Dec 2025 
 
 **Contact:**  
-📧 sleemrezk@yahoo.com | sleemkhw@gmail.com  
+📧 sleemkhw@gmail.com  
 🔗 [LinkedIn](https://www.linkedin.com/in/selim-khwaga-b79921196/)
 
 ---
@@ -21,10 +21,11 @@ Deep learning system for automated detection and classification of periapical le
 
 ### Key Achievements
 
-- **80.7% mAP@0.5**  
-- **82.3% Precision** 
-- **73.1% Recall** 
-- **Large-scale validation** - 3,534 validation images
+- **External validation (DENTEX, MICCAI 2023)**  
+- **81% Sensitivity**  
+- **81% Specificity**  
+- **95.6% Negative Predictive Value (NPV)**  
+- **Image-level periapical-lesion screening**
 
 ---
 
@@ -38,8 +39,7 @@ Deep learning system for automated detection and classification of periapical le
 | **Precision** | 82.3% | 82% of positive detections are true lesions |
 | **Recall** | 73.1% | System identifies 73% of all actual lesions |
 | **F1-Score** | 77.4% | Balanced performance metric |
-| **Training Data** | 13,058 images | Large-scale dataset for robust learning |
-| **Validation Data** | 3,534 images | Comprehensive evaluation set |
+| **Training Data** | 3,900 unique radiographs (augmented to ~13,000 training instances) | Large-scale dataset for robust learning |
 
 ### Performance by Lesion Severity
 
@@ -52,19 +52,24 @@ The model demonstrates balanced performance across lesion severities, with sligh
 
 ### Binary Classification Performance
 
-Testing on external DENTEX dataset with 116 diseased and 116 healthy images:
+**External DENTEX evaluation (705 images: 589 no-lesion, 116 lesion)**
 
-| Threshold | Accuracy | Sensitivity | Specificity |
-|-----------|----------|-------------|-------------|
-| 0.3 | 85.3% | 92.2% | 78.4% |
-| **0.4** ⭐ | **87.9%** | **89.7%** | **86.2%** |
-| 0.5 | 84.1% | 85.3% | 82.8% |
+* **Threshold:** 0.4 (selected on this set using Youden's J)
+* **Accuracy:** 81.1%
+* **Sensitivity:** 81.0%
+* **Specificity:** 81.2%
+* **Positive Predictive Value (PPV):** 45.9%
+* **Negative Predictive Value (NPV):** 95.6%
+* **F1 Score:** 0.586
+
+*Notes:*
+
+* *"No-lesion" refers to the absence of a periapical lesion; images may still contain other dental findings.*
+* *Metrics are reported for image-level present/absent classification, not lesion localization.*
+
 
 **Confusion Matrix (Optimal threshold = 0.4):**
-- True Positives: 104/116 diseased correctly identified
-- True Negatives: 100/116 healthy correctly classified
-- False Positives: 16/116 over-diagnosis rate
-- False Negatives: 12/116 missed lesions
+- TP 94, TN 478, FP 111, FN 22 (of 705)
 
 ---
 
@@ -83,7 +88,7 @@ Testing on external DENTEX dataset with 116 diseased and 116 healthy images:
 
 **Primary Dataset:**
 - **Source:** Custom annotated panoramic radiograph collection
-- **Total Images:** 16,592 (13,058 training / 3,534 validation)
+- **Total Images:** 3,924 original radiographs (57 exact-duplicate groups present), augmented ~3.3×.
 - **Classes:** 
   - Type3: Periapical radiolucency (63.7% of dataset) - 14,253 instances
   - Type4: Advanced periapical lesion (36.1% of dataset) - 8,111 instances
@@ -95,7 +100,7 @@ Testing on external DENTEX dataset with 116 diseased and 116 healthy images:
 - **Size:** 232 images (116 healthy, 116 with periapical lesions)
 
 **Data Corrections:**
-- Fixed 4,056 corrupted annotations (25% of original dataset)
+- Automated label-cleaning pipeline (out-of-range class-ID clamping + coordinate clipping) applied to ~25% of annotations.
 - Developed automated label correction pipeline, with partial manual verification of annotation quality
 - Applied quality control measures including class mapping standardization and coordinate validation
 
@@ -226,16 +231,8 @@ periapical-lesion-detection/
 1. **Automated Screening:** Potential for first-line diagnostic support in general dental practice
 2. **Resource Efficiency:** Reduces radiograph review time while maintaining accuracy
 3. **Consistency:** Reduces inter-observer variability in lesion detection
-4. **Early Detection:** High sensitivity (73%) for identifying early-stage lesions
 
-### Alignment with Saudi Vision 2030
 
-This work directly contributes to Saudi Arabia's healthcare transformation goals:
-
-- **Digital Health Infrastructure:** AI-powered diagnostic tools for modernized healthcare
-- **Quality of Care:** Enhanced diagnostic accuracy in dental services
-- **Accessibility:** Potential deployment in underserved regions with limited specialist access
-- **Medical Innovation:** Positions Saudi Arabia as a leader in AI healthcare applications
 
 ### Future Clinical Applications
 
@@ -253,7 +250,6 @@ This work directly contributes to Saudi Arabia's healthcare transformation goals
 
 This project was developed as part of advanced research in medical imaging and artificial intelligence, exploring the intersection of clinical dentistry and deep learning for improved diagnostic workflows.
 
-**Target Program:** Graduate studies in Computational Biology / Bioengineering (2025-2026)
 **Research Interests:** Medical Imaging AI, Domain Adaptation, Cross-Population Generalization, Healthcare Machine Learning
 **Academic Status:**
 - BSc: British University in Egypt (BUE) - GPA: 4.0/4.0
