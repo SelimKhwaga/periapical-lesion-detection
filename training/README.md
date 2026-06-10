@@ -28,8 +28,4 @@
    - Epochs: 150 with early stopping
    - Platform: Lightning AI (NVIDIA T4 GPU)
    
-   ## Results
-   
-   - Final mAP@0.5: 80.7%
-   - Precision: 82.3%
-   - Recall: 73.1%
+
