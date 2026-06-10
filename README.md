@@ -54,13 +54,13 @@ The model demonstrates balanced performance across lesion severities, with sligh
 
 **External DENTEX evaluation (705 images: 589 no-lesion, 116 lesion)**
 
-* **Threshold:** 0.4 (selected on this set using Youden's J)
-* **Accuracy:** 81.1%
-* **Sensitivity:** 81.0%
-* **Specificity:** 81.2%
-* **Positive Predictive Value (PPV):** 45.9%
-* **Negative Predictive Value (NPV):** 95.6%
-* **F1 Score:** 0.586
+  * **Threshold:** 0.4 (selected on this set using Youden's J)
+  * **Accuracy:** 81.1%
+  * **Sensitivity:** 81.0%
+  * **Specificity:** 81.2%
+  * **Positive Predictive Value (PPV):** 45.9%
+  * **Negative Predictive Value (NPV):** 95.6%
+  * **F1 Score:** 0.586
 
 *Notes:*
 
