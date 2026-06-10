@@ -21,7 +21,7 @@ Deep learning system for automated detection and classification of periapical le
 
 ### Key Achievements
 
-- **External validation (DENTEX, MICCAI 2023)**  
+**External validation (DENTEX, MICCAI 2023)**  
 - **81% Sensitivity**  
 - **81% Specificity**  
 - **95.6% Negative Predictive Value (NPV)**  
