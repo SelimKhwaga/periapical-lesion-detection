@@ -334,28 +334,16 @@ dfl: 1.5
 ### Data Distribution
 
 **Training Set (78.7%):**
-- Total: 13,058 images
+- Total: 3,924 unique radiographs, augmented to ~13,058 samples
 - Type3 Lesions: 14,253 instances (63.7%)
 - Type4 Lesions: 8,111 instances (36.1%)
 - Image Format: JPEG/PNG, various resolutions
 - Annotation Format: YOLO txt files (normalized bounding boxes)
 
-**Validation Set (21.3%):**
-- Total: 3,534 images
-- Proportional class distribution maintained
-- Used for hyperparameter tuning and model selection
-- Pre-split validation set used for model selection
-
 **External Test Set (DENTEX):**
 - Total: 232 images
 - Binary labels: Healthy (116) vs Diseased (116)
 - Purpose: Generalization and binary classification assessment
-
-### Data Quality Control
-
-1. **Annotation Correction:** Automated pipeline standardized 4,056 label inconsistencies (25% of dataset), including class remapping and coordinate validation
-2. **Clinical Validation:** Partial manual review of annotations by licensed dentist (DDS)
-
 
 ---
 
